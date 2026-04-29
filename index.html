@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,26 +26,6 @@
   --text-xs:clamp(.75rem,.7rem+.25vw,.875rem);--text-sm:clamp(.875rem,.8rem+.35vw,1rem);
   --text-base:clamp(1rem,.95rem+.25vw,1.125rem);--text-lg:clamp(1.125rem,1rem+.75vw,1.5rem);
 }
-[data-theme="dark"]{
-  --color-bg:#0f0e0c;--color-surface:#161513;--color-surface-2:#1d1c1a;
-  --color-surface-offset:#1a1917;--color-surface-dynamic:#252320;
-  --color-divider:#28271f;--color-border:#333128;--color-text:#d6d4cf;
-  --color-text-muted:#797876;--color-text-faint:#504e49;
-  --color-primary:#3d9aa6;--color-primary-hover:#2a8290;--color-primary-hl:#192d30;
-  --color-accent:#4a8cb5;--color-accent-hl:#162232;
-  --color-warning:#c4784a;--color-warning-hl:#2e1f13;
-  --color-success:#5fa33a;--color-success-hl:#172212;--color-error:#c96db0;
-  --shadow-sm:0 1px 3px oklch(0 0 0/.25);--shadow-md:0 4px 14px oklch(0 0 0/.35);
-}
-@media(prefers-color-scheme:light){:root:not([data-theme]){
-  --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;
-  --color-surface-offset:#f0ede9;--color-border:#d4d1ca;--color-text:#28251d;
-  --color-text-muted:#7a7974;--color-text-faint:#bab9b4;
-  --color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-hl:#cedcd8;
-  --color-accent:#006494;--color-accent-hl:#c6d8e4;
-  --color-warning:#964219;--color-warning-hl:#ddcfc6;--color-success:#437a22;--color-success-hl:#d4dfcc;
-  --color-error:#a12c7b;--shadow-sm:0 1px 3px oklch(0.2 0.01 80/0.08);
-}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg);min-height:100dvh;line-height:1.6}
@@ -57,8 +37,7 @@ header{position:sticky;top:0;z-index:50;background:color-mix(in oklch,var(--colo
 .logo{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:inherit}
 .logo-text{font-size:var(--text-sm);font-weight:600;letter-spacing:-.01em;line-height:1.2}
 .logo-sub{font-size:var(--text-xs);color:var(--color-text-muted)}
-.theme-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius-full);color:var(--color-text-muted);border:1px solid var(--color-border);transition:color var(--transition),border-color var(--transition),background var(--transition)}
-.theme-btn:hover{color:var(--color-text);background:var(--color-surface-offset);border-color:var(--color-primary)}
+.theme-btn{display:none}
 main{display:grid;gap:var(--space-6);padding:var(--space-8) var(--space-6);max-width:1100px;margin-inline:auto;width:100%}
 .panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);overflow:hidden}
 .panel-header{padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--color-border);background:var(--color-surface-offset);display:flex;align-items:center;gap:var(--space-3)}
@@ -172,9 +151,9 @@ footer{margin-top:var(--space-8);padding:var(--space-6);text-align:center;color:
       <div class="logo-sub">HW4 — Prefix · Postfix · Trace</div>
     </div>
   </a>
-  <button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
+  <button class="theme-btn" data-theme-toggle aria-label="Toggle theme" aria-hidden="true" tabindex="-1">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
     </svg>
   </button>
 </header>
@@ -316,7 +295,6 @@ footer{margin-top:var(--space-8);padding:var(--space-6);text-align:center;color:
 </div>
 
 <script>
-// ── Converter Engine (JS port of HW4.cpp) ──
 const isOperand=c=>/[A-Za-z0-9]/.test(c);
 const isOperator=c=>'+-*/^'.includes(c);
 function pPriority(c){if(c==='^')return 8;if(c==='*'||c==='/')return 7;if(c==='+'||c==='-')return 6;return-1;}
@@ -411,7 +389,6 @@ function validateInfix(tokens){
   return d>0?'Unmatched (':null;
 }
 
-// ── UI State ──
 const MODES={
   infixToPostfix:{label:'Infix → Postfix',input:'Infix',outA:'Postfix',outB:'Prefix'},
   infixToPrefix:{label:'Infix → Prefix',input:'Infix',outA:'Prefix',outB:'Postfix'},
@@ -625,7 +602,6 @@ function toggleTrace(){
   traceToggle.setAttribute('aria-expanded',open);
 }
 
-// Examples
 const examplesList=document.getElementById('examples-list');
 EXAMPLES.forEach(ex=>{
   const chip=document.createElement('button');chip.className='example-chip';
@@ -638,19 +614,6 @@ EXAMPLES.forEach(ex=>{
   });
   examplesList.appendChild(chip);
 });
-
-// Theme
-(function(){
-  const btn=document.querySelector('[data-theme-toggle]'),root=document.documentElement;
-  let dark=root.getAttribute('data-theme')==='dark';
-  function setTheme(d){
-    dark=d;root.setAttribute('data-theme',d?'dark':'light');
-    btn.innerHTML=d?
-      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`:
-      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
-  }
-  btn.addEventListener('click',()=>setTheme(!dark));
-})();
 
 updateModeUI();
 </script>
